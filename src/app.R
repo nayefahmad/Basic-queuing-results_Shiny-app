@@ -100,7 +100,7 @@ server <- function(input, output) {
                  border = "black",
                  xlab = "Waiting time to next eruption (in mins)",
                  main = paste0("Histogram of waiting times \n Test value: ", 
-                               input$test))
+                               input$test))  # reference to input with ID "test"
             
       })
       
@@ -108,7 +108,8 @@ server <- function(input, output) {
 
 
 # 3) Call to shinyApp: ----------------
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, 
+         server = server)
 
 
 
