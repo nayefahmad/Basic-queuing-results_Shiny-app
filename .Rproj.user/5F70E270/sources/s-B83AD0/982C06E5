@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1535054419822.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "982C06E5",
+    "lastKnownWriteTime" : 1535054631,
+    "last_content_update" : -2147483648,
+    "path" : "H:/VCH files - Nayef/2018-08-23_shiny_queuing-app/src/app.R",
+    "project_path" : "src/app.R",
+    "properties" : {
+        "cursorPosition" : "29,22",
+        "scrollLine" : "15",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
