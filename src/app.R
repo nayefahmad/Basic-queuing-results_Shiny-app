@@ -4,7 +4,9 @@
 # Playing with the Hello Shiny example
 #*****************************************
 
-library(shiny)
+library("shiny")
+library("here")
+
 
 #TODO: ----------------------------------- 
 # > where are we passing input to the function server( )? 
@@ -123,4 +125,5 @@ shinyApp(ui = ui,
 
 # alternative: 
 # use "Run app button", or press Control+Shift+Enter
+
 
