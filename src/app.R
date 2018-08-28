@@ -6,12 +6,15 @@
 
 library("shiny")
 library("here")
+library("tidyverse")
 
 
 #TODO: ----------------------------------- 
-# > where are we passing input to the function server( )? 
 
 #*****************************************
+
+# load functions: 
+source(here("src", "testfn_function.R"))
 
 
 
@@ -20,21 +23,21 @@ library("here")
 ui <- fluidPage(
       
       # App title ----
-      titlePanel("Example 1"),
-      h1("heading 1"),  # you can use this instead of titlePanel? 
-      
-      h3("H3 is fine without tags and so is code here"),
+      titlePanel("Basic Queuing Theory Results"),
+
+      h3("Problem statement"),  
       
       # you can use HTML tags: --------------
-      # display blockquote: 
-      tags$blockquote("block quote requires tags - less common than h3(), h1() or code()"),
+      # Reference: https://shiny.rstudio.com/articles/tag-glossary.html 
+      # "Shiny provides a list of functions named tags. Each function in the 
+      # list creates an HTML tag that you can use to layout your Shiny App."
       
-      # display code: 
-      code("data.frame(a=1:10, b=1:10)"), 
-      
-      # display body text: 
-      tags$body("\nlist of tags: http://shiny.rstudio.com/articles/html-tags.html"), 
-      
+      # div( ) creates a section of an HTML doc 
+      tags$div(
+            tags$p("First paragraph"), 
+            tags$p("Second paragraph"), 
+            tags$p("Third paragraph")
+      ),
       
       # customize sidebar: ----------------
       # Sidebar layout with input and output definitions ----
@@ -96,13 +99,19 @@ server <- function(input, output) {
             bins <- seq(min(x), max(x), 
                         length.out = input$bins + 1)  # this is where we reference the input that the user chooses using the slider 
             
+            testval <- testfn(rnorm(100))[2] %>% 
+                  unname %>% 
+                  as.character
+            
             hist(x, 
                  breaks = bins, 
                  col = "#75AADB", 
                  border = "black",
                  xlab = "Waiting time to next eruption (in mins)",
                  main = paste0("Histogram of waiting times \n Test value: ", 
-                               input$test))  # reference to input with ID "test"
+                               input$test, # reference to input with ID "test"
+                               "\n test imported fn: ", 
+                               testval))  
             
       })
       
