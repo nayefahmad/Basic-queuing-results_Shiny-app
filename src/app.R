@@ -26,6 +26,62 @@ testval.nonreactive <- testfn(rnorm(100))
 
 
 
+# > prob of 0 people in system: ----------
+p_0.prob <- function(lambda,  # arrival rate 
+                     mu,  # service rate 
+                     c){  # num servers 
+      
+      # output: p_0(n), the pdf of the r.v. n representing the 
+      
+      library("purrr")
+      library("tidyverse")
+      
+      # define vars: 
+      r <-  lambda/mu 
+      rho <- lambda/(c*mu) 
+      state.list <- 0:(c-1)
+      
+      
+      first.term <- r^c/(factorial(c) * (1-rho))
+      
+      second.term <- 
+            map_dbl(state.list, function(x){
+                  r^x/factorial(x)
+            }) %>% 
+            sum
+      
+      return(1/(first.term + second.term))
+      
+}
+
+
+
+
+# > avt time in system for MMC queue: -----
+avg.tis_mmc <- function(lambda, 
+                        mu, 
+                        c,  # num servers 
+                        p_0.function = p_0.prob  # function used to calculate p_0 
+){
+      
+      # output: average time in system (TIS) including time in queue and 
+      #     time in service 
+      # Note: for ED modelling, if we define service time as start to 
+      #     disposition time, then we expect most of the TIS to fall under time in service 
+      #     The division between "queue" and "service" can be arbitrarily selected for this system 
+      
+      # define vars: 
+      r <-  lambda/mu 
+      rho <- lambda/(c*mu)
+      
+      W = 1/mu + 
+            (((r^c)/(factorial(c) * (c*mu) * ((1-rho)^2))) * 
+                   p_0.function(lambda, mu, c))
+      
+      return(W)
+      
+}
+
 
 
 
@@ -69,18 +125,18 @@ ui <- fluidPage(
             sidebarPanel(
                   
                   # Input: Slider for the number of bins 
-                  sliderInput(inputId = "bins",
-                              label = "Number of bins:",
-                              min = 5,
+                  sliderInput(inputId = "servers",
+                              label = "Number of Servers:",
+                              min = 1,
                               max = 50,
-                              value = 30),
+                              value = 5),
                   
                   # Input: Slider that doesn't really do anything 
-                  sliderInput(inputId = "test",
-                              label = "Test slider:",
+                  sliderInput(inputId = "serv.rate",
+                              label = "Service rate (patients/server/day):",
                               min = 1,
-                              max = 100,
-                              value = 30)
+                              max = 20,
+                              value = 4)
                   
             ),
             
@@ -104,7 +160,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
       
-      # Histogram example  ----
+      # Graph of TIS vs utilization rate: ------
       # This expression that generates a histogram is wrapped in a call
       # to renderPlot to indicate that:
       #
@@ -114,24 +170,47 @@ server <- function(input, output) {
       
       output$distPlot <- renderPlot({
             
-            # number of bins: 
-            # bins.from.input.slider <- seq(min(mtcars$mpg), max(mtcars$mpg), 
-                                          # length.out = input$bins + 1)  # reference the input with ID "bins" 
+            # max visits determined by rho < mu * c 
+            max.visits <- (input$servers * input$serv.rate) - 1  
             
-            # testing the imported function:
-            testval <- testfn(rnorm(100))[2] %>% 
-                  unname %>% 
-                  as.character
+            # create dataframe to plot: 
+            df <- data.frame(visits = seq(1, max.visits, length.out = 100),
+                             tis = map_dbl(seq(1, max.visits, length.out = 100), 
+                                           avg.tis_mmc, 
+                                           c = input$servers, 
+                                           mu = input$serv.rate, 
+                                           p_0.function = p_0.prob) *24) %>% 
+                  mutate(rho = visits/(input$servers * input$serv.rate), 
+                         tis = ifelse(is.nan(tis), 25, tis))
             
-            mtcars %>%
-                  ggplot(aes(x = mpg)) + 
-                  geom_histogram(bins = input$bins) + 
-                  labs(title = paste0("Histogram of mtcars$mpg \nTest value: ", 
-                                      input$test, # reference to input with ID "test"
-                                      "\nTest imported fn (reactive): ",
-                                      testval, 
-                                      "\nTest imported fn (nonreactive): ",
-                                      testval.nonreactive))
+            
+            
+            # draw plot: 
+            df %>% ggplot(aes(x=rho, y=tis)) + 
+                  geom_line() + 
+                  # scale_y_continuous(limits = c(0, 24)) +
+                  scale_x_continuous(breaks = seq(0.0, 1.1, 0.1), 
+                                     labels = seq(0.0, 1.1, 0.1)) + 
+                  # geom_vline(xintercept = 0.9, 
+                             # colour = "red") + 
+                  labs(title = "Average time in system versus utilization rate (rho)", 
+                       subtitle = paste0("Max number of visits: ", 
+                                         max.visits), 
+                       x = "Resource utilization", 
+                       y = "Time in system (hours)") + 
+                  theme_classic(base_size = 12)
+            
+            
+            
+            # mtcars %>%
+            #       ggplot(aes(x = mpg)) + 
+            #       geom_histogram(bins = input$servers) + 
+            #       labs(title = paste0("Histogram of mtcars$mpg \nTest value: ", 
+            #                           input$serv.rate, # reference to input with ID "test"
+            #                           "\nMax visits (reactive): ",
+            #                           max.visits, 
+            #                           "\nTest imported fn (nonreactive): ",
+            #                           testval.nonreactive))
             
       })
       
