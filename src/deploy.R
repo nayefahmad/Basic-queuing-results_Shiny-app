@@ -5,4 +5,4 @@
 
 library("rsconnect")
 
-rsconnect::deployApp(here("src"), appName = "Basic Queuing Results")
+rsconnect::deployApp(here("src"), appName = "Basic-Queuing-Results")
