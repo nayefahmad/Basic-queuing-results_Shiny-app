@@ -85,8 +85,7 @@ ui <- fluidPage(
 # 2) Define server logic required to draw a histogram ----
 server <- function(input, output) {
       
-      # Histogram of the Old Faithful Geyser Data ----
-      # with requested number of bins
+      # Histogram example  ----
       # This expression that generates a histogram is wrapped in a call
       # to renderPlot to indicate that:
       #
@@ -95,23 +94,33 @@ server <- function(input, output) {
       # 2. Its output type is a plot
       output$distPlot <- renderPlot({
             
-            x    <- faithful$waiting
-            bins <- seq(min(x), max(x), 
-                        length.out = input$bins + 1)  # this is where we reference the input that the user chooses using the slider 
+            # number of bins: 
+            # bins.from.input.slider <- seq(min(mtcars$mpg), max(mtcars$mpg), 
+                                          # length.out = input$bins + 1)  # reference the input with ID "bins" 
             
+            # testing the imported function:
             testval <- testfn(rnorm(100))[2] %>% 
                   unname %>% 
                   as.character
             
-            hist(x, 
-                 breaks = bins, 
-                 col = "#75AADB", 
-                 border = "black",
-                 xlab = "Waiting time to next eruption (in mins)",
-                 main = paste0("Histogram of waiting times \n Test value: ", 
-                               input$test, # reference to input with ID "test"
-                               "\n test imported fn: ", 
-                               testval))  
+            mtcars %>%
+                  ggplot(aes(x = mpg)) + 
+                  geom_histogram(bins = input$bins) + 
+                  labs(title = paste0("Histogram of mtcars$mpg \nTest value: ", 
+                                      input$test, # reference to input with ID "test"
+                                      "\nTest imported fn: ",
+                                      testval))
+            
+            
+            # hist(x, 
+            #      breaks = bins, 
+            #      col = "#75AADB", 
+            #      border = "black",
+            #      xlab = "Waiting time to next eruption (in mins)",
+            #      main = paste0("Histogram of waiting times \n Test value: ", 
+            #                    input$test, # reference to input with ID "test"
+            #                    "\n test imported fn: ", 
+            #                    testval))  
             
       })
       
