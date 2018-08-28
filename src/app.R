@@ -126,7 +126,9 @@ ui <- fluidPage(
             tags$p("Here one of the fundamental insights of queuing theory: system performance rapidly deteriorates as the resource utilization rate approaches 100%. If arrivals and service times are non-deterministic, there is always a tradeoff between average time in system, and utilization rate."), 
             tags$p("Take a look at how long your patients will be spending in your emergency department if you only include 1 bed: as the average number of arrivals approaches 4 per day, the average wait time reaches unacceptably high levels - over 40 hours. "),
             tags$p("Why is this happening? Because even though on average there are 4 patients a day, there will often be more. And even though on average the service time is 6 hours, there are many cases where it is higher. Finally, it is not true that patients arrive sequentially, with a new arrival ocurring only when the current patient leaves. Therefore, even though the service time may be somewhere around 6 hours, many patients will spend a lot of time waiting in a queue, as all the arrivals ahead of them get service."), 
-            tags$p("In actual applications, it is very important to consider this tradeoff between utilization rate and average time in system.") 
+            tags$p("In actual applications, it is very important to consider this tradeoff between utilization rate and average time in system. If you play around with the parameters for a bit, you'll find that you have 2 options for keeping the average time in system at around 6-8 hours: "), 
+            tags$p("1. Increase number of servers to 2, while keeping service rate constant at 4 patients per day."), 
+            tags$p("2. Increase service rate to about 6.5 patients per day while keeping number of servers constant at 1. ")
       ), 
       
       
