@@ -240,7 +240,8 @@ server <- function(input, output) {
                   theme_classic(base_size = 18)
             
       }, 
-      width = 700)
+      width = 800, 
+      height = 600)
       
 }
 
