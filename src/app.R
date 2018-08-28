@@ -164,7 +164,13 @@ ui <- fluidPage(
                   # Input: cutoff of y-axis: 
                   numericInput(inputId = "ymax", 
                                label = "Cut off y-axis at:", 
-                               value = 50)
+                               value = 50), 
+                  
+                  # Input: vertical line to highlight arrivals rate: 
+                  numericInput(inputId = "arrivals", 
+                               label = "Specific arrivals rate:", 
+                               value = 3.5, 
+                               step = 0.2)
                   
             ),
             
@@ -219,8 +225,13 @@ server <- function(input, output) {
                   scale_y_continuous(limits = c(0, input$ymax)) +
                   scale_x_continuous(breaks = seq(0.0, 1.1, 0.1), 
                                      labels = seq(0.0, 1.1, 0.1)) + 
+                  
                   geom_hline(yintercept = 24,
                              colour = "grey90") +
+                  
+                  geom_vline(xintercept = input$arrivals/(input$servers * input$serv.rate), 
+                             colour = "red") + 
+                  
                   labs(title = "Average time in system versus utilization rate", 
                        subtitle = paste0("For given mu and c, utilization increases as avg. arrivals increases\nMax arrival rate per day: ", 
                                          max.visits), 
