@@ -164,16 +164,22 @@ ui <- fluidPage(
                                              tags$p("And we're done, right? Well, not quite. You might get into some serious trouble if you use this approach. ")
                                        ), 
                                        
-                                       h3("Actual solution"), 
+                                       h3("Queuing theory insights"), 
                                        
                                        tags$div(
                                              tags$p("This is one of the fundamental insights of queuing theory: system performance rapidly deteriorates as the resource utilization rate approaches 100%. If arrivals and service times are non-deterministic, there is always a tradeoff between average time in system and utilization rate."), 
                                              tags$p("Take a look at how long your patients will be spending in your emergency department if you only include 1 bed: as the average number of arrivals approaches 4 per day, the average wait time reaches unacceptably high levels - over 40 hours. "),
-                                             tags$p("Why is this happening? Because even though on average there are 4 patients a day, there will often be more. And even though on average the service time is 6 hours, there are many cases where it is higher. Finally, it is not true that patients arrive sequentially, with a new arrival ocurring only when the current patient leaves. Therefore, even though the service time may be somewhere around 6 hours, many patients will spend a lot of time waiting in a queue, as all the arrivals ahead of them get service."), 
+                                             tags$p("Why is this happening? Because even though on average there are 4 patients a day, there will often be more. And even though on average the service time is 6 hours, there are many cases where it is higher. Finally, it is not true that patients arrive sequentially, with a new arrival ocurring only when the current patient leaves. Therefore, even though the service time may be somewhere around 6 hours, many patients will spend a lot of time waiting in a queue, as all the arrivals ahead of them get service.")
+                                       ), 
+                                       
+                                       h3("Conclusion"), 
+                                       
+                                       tags$div(
                                              tags$p("In actual applications, it is very important to consider this tradeoff between utilization rate and average time in system. If you play around with the parameters for a bit, you'll find that you have 2 options for keeping the average time in system at around 6-8 hours: "), 
                                              tags$p("1. Increase number of servers to 2, while keeping service rate constant at 4 patients per day."), 
                                              tags$p("2. Increase service rate to about 6.5 patients per day while keeping number of servers constant at 1. ")
-                                       )), 
+                                       )
+                              ), 
                               tabPanel("Assumptions", 
                                        
                                        h3("M/M/c queue assumptions"), 
@@ -189,7 +195,7 @@ ui <- fluidPage(
                                        h3("Relaxing the assumptions"), 
                                        
                                        tags$div(
-                                             tags$p("In nearly many cases, relaxing these assumptions means that system performance will become worse. Hence, results from M/M/c queuing model can be considered a best-case scenario.")
+                                             tags$p("In many cases, relaxing these assumptions means that system performance will become worse. Hence, results from M/M/c queuing model can be considered a best-case scenario.")
                                        )
                                        
                               ), 
@@ -197,8 +203,9 @@ ui <- fluidPage(
                                        
                                        tags$div(
                                              tags$p("1. Gross et al. Fundamentals of Queueing Theory. 2008, p. 69."), 
-                                             tags$p("2. Zai et al. 'Queuing Theory to Guide the Implementation of a Heart Failure Inpatient Registry Program'. J Am Med Inform Assoc., 2009"), 
-                                             tags$p("3. Wiler et al. 'An emergency department patient flow model based on queueing theory principles'. Acad Emerg Med., 2013")
+                                             tags$p("2. Hall, Randolph. Patient Flow: Reducing delay in healthcare delivery. 2013, p. 365"), 
+                                             tags$p("3. Zai et al. 'Queuing Theory to Guide the Implementation of a Heart Failure Inpatient Registry Program'. J Am Med Inform Assoc., 2009"), 
+                                             tags$p("4. Wiler et al. 'An emergency department patient flow model based on queueing theory principles'. Acad Emerg Med., 2013")
                                        )
                                        
                                        
