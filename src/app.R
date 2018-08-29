@@ -120,7 +120,7 @@ ui <- fluidPage(
                   
                   # Input: Slider that doesn't really do anything 
                   sliderInput(inputId = "serv.rate",
-                              label = "Service rate (mu = patients/server/day):",
+                              label = "Avg. Service rate (mu = patients/server/day):",
                               min = 1,
                               max = 20,
                               value = 4, 
@@ -133,7 +133,7 @@ ui <- fluidPage(
                   
                   # Input: vertical line to highlight arrivals rate: 
                   numericInput(inputId = "arrivals", 
-                               label = "Specific arrivals rate (red line):", 
+                               label = "Avg. Arrivals rate (red line):", 
                                value = 3.5, 
                                step = 0.2)
                   
@@ -160,7 +160,8 @@ ui <- fluidPage(
                                              tags$p("All you have to do is solve the equation: Supply for beds = Demand for beds"), 
                                              tags$p("In this case: " ), 
                                              tags$p("==> 4 patients arriving per day * 0.25 days service time (demand) = x beds * 1 day of capacity (supply)"), 
-                                             tags$p("==> Therefore x = 1")
+                                             tags$p("==> Therefore x = 1"), 
+                                             tags$p("And we're done, right? Well, not quite. You might get into some serious trouble if you use this approach. ")
                                        ), 
                                        
                                        h3("Actual solution"), 
@@ -175,17 +176,34 @@ ui <- fluidPage(
                                        )), 
                               tabPanel("Assumptions", 
                                        
+                                       h3("M/M/c queue assumptions"), 
                                        tags$div(
                                              tags$p("1. Steady state: the system is assumed to be in a steady state - that is, the arrival rate and service rate have stayed constant over a long period, so that system behaviour stabilizes."), 
                                              tags$p("2. Arrivals are Poisson distributed (therefore interarrival times are exponentially distributed). This is a standard assumption for modelling arrivals to hospital emergency departments, although often one considers only a particular time window - e.g. 10:00 AM to 12:00 PM"), 
                                              tags$p("3. Service times are exponentially distributed. Again, this is a common assumption, and in some cases matches data closely. For hospital EDs, though, it is probably best to consider it an approximation until you test for it."), 
                                              tags$p("4. Queue discipline: first come first served"), 
                                              tags$p("5. Maximum queue size: infinite. In reality, there are limits to waiting spaces. When the M/M/c model shows very high time in system results, you can interpret this as meaning that in reality, waiting spaces will start to overflow, and the system will be operating very poorly. To explicitly model limited wait times, look up M/M/c/K queuing models. "), 
-                                             tags$p("4. Queue discipline: first come first served") 
+                                             tags$p("6. Balking and reneging do not occur. Under this assumption, customers do not leave until they have been served, and they join the queue no matter how long it currently is. In reality, both these behaviours occur, so average time in system will be lower than suggested by the M/M/c model. However, note that this is still a system failure, because the system is failing to serve customers, and they leave in frustration. ") 
+                                       ), 
+                                       
+                                       h3("Relaxing the assumptions"), 
+                                       
+                                       tags$div(
+                                             tags$p("In nearly many cases, relaxing these assumptions means that system performance will become worse. Hence, results from M/M/c queuing model can be considered a best-case scenario.")
                                        )
                                        
+                              ), 
+                              tabPanel("References", 
+                                       
+                                       tags$div(
+                                             tags$p("1. Gross et al. Fundamentals of Queueing Theory. 2008, p. 69."), 
+                                             tags$p("2. Zai et al. 'Queuing Theory to Guide the Implementation of a Heart Failure Inpatient Registry Program'. J Am Med Inform Assoc., 2009"), 
+                                             tags$p("3. Wiler et al. 'An emergency department patient flow model based on queueing theory principles'. Acad Emerg Med., 2013")
                                        )
+                                       
+                                       
                               )
+                        )
                   )
                   
                   
@@ -244,7 +262,7 @@ server <- function(input, output) {
                              colour = "red") + 
                   
                   labs(title = "Average time in system versus utilization rate", 
-                       subtitle = paste0("For given mu and c, utilization increases as avg. arrivals increases\nMax arrival rate per day: ", 
+                       subtitle = paste0("For given service rate and number of servers, utilization increases as avg. arrivals increases\nMax arrival rate per day: ", 
                                          max.visits), 
                        x = "Resource utilization", 
                        y = "Average time in system (hours)") + 
