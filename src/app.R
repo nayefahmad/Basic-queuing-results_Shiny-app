@@ -148,20 +148,27 @@ ui <- fluidPage(
                                        h3("Problem Statement"), 
                                        
                                        tags$div(
-                                             tags$p("Let's say you're building a hospital emergency department, and you need to decide how many beds to include in your design. To do so, you have to consider the demand for these beds, which depends on the average number of patients that arrive every day (the 'arrival rate'), and the average amount of time that they require a bed for treatment (the 'service time')."), 
-                                             tags$p("To keep things very simple at first, let's say you expect that at most, the average arrival rate is 4 patients per day. Also, you expect that the average service time is about 6 hours (so your 'service rate' is 24/6 = 4 patients per day)."), 
-                                             tags$p("Given these parameters, how many beds should you include in your design?")
+                                             tags$p("Let's say you're building a hospital emergency department (ED), and you need to decide how many beds to include in your design. To do so, you have to consider the demand for these beds, which depends on the number of patients that arrive every day (the 'arrival rate'), and the amount of time each patient requires for treatment (the 'service time')."), 
+                                             tags$p("To keep things very simple at first, let's say you expect the following pattern of demand: "),
+                                             tags$p("> Average arrival rate: 4 patients per day"), 
+                                             tags$p("> Average service time: 6 hours or 0.25 days (so your 'service rate' is 1/0.25 = 4 patients per day)"), 
+                                             tags$br(), 
+                                             tags$p("Given these parameters, how many beds should you include in your design?"), 
+                                             tags$br()
                                        ),
                                        
                                        h3("Naive solution"),
                                        
                                        tags$div(
                                              tags$p("Well, this is easy - obviously, all you need is 1 bed, right? Even if 4 people show up, they will each require about 6 hours of service per day, so 1 bed can serve all 4 of them."), 
-                                             tags$p("All you have to do is solve the equation: Supply for beds = Demand for beds"), 
+                                             tags$p("All you have to do is solve the equation: Supply of beds = Demand for beds"), 
                                              tags$p("In this case: " ), 
-                                             tags$p("==> 4 patients arriving per day * 0.25 days service time (demand) = x beds * 1 day of capacity (supply)"), 
-                                             tags$p("==> Therefore x = 1"), 
-                                             tags$p("And we're done, right? Well, not quite. You might get into some serious trouble if you use this approach. ")
+                                             tags$p("> Demand = Supply"), 
+                                             tags$p("> 4 patients arriving per day * 0.25 days service time = x beds * 1 day of capacity"), 
+                                             tags$p("> Therefore x = 1 bed"), 
+                                             tags$br(), 
+                                             tags$p("And we're done, right? Well, not quite. You might get into some serious trouble if you use this approach. "),
+                                             tags$br()
                                        ), 
                                        
                                        h3("Queuing theory insights"), 
@@ -169,7 +176,8 @@ ui <- fluidPage(
                                        tags$div(
                                              tags$p("This is one of the fundamental insights of queuing theory: system performance rapidly deteriorates as the resource utilization rate approaches 100%. If arrivals and service times are non-deterministic, there is always a tradeoff between average time in system and utilization rate."), 
                                              tags$p("Take a look at how long your patients will be spending in your emergency department if you only include 1 bed: as the average number of arrivals approaches 4 per day, the average wait time reaches unacceptably high levels - over 40 hours. "),
-                                             tags$p("Why is this happening? Because even though on average there are 4 patients a day, there will often be more. And even though on average the service time is 6 hours, there are many cases where it is higher. Finally, it is not true that patients arrive sequentially, with a new arrival ocurring only when the current patient leaves. Therefore, even though the service time may be somewhere around 6 hours, many patients will spend a lot of time waiting in a queue, as all the arrivals ahead of them get service.")
+                                             tags$p("Why is this happening? Because even though on average there are 4 patients a day, there will often be more. And even though on average the service time is 6 hours, there are many cases where it is higher. Finally, it is not true that patients arrive sequentially, with a new arrival ocurring only when the current patient leaves. Therefore, even though the service time may be somewhere around 6 hours, many patients will spend a lot of time waiting in a queue, as all the arrivals ahead of them get service. These effects will compound over time until the system reaches a 'steady state'. "), 
+                                             tags$br()
                                        ), 
                                        
                                        h3("Conclusion"), 
@@ -177,7 +185,9 @@ ui <- fluidPage(
                                        tags$div(
                                              tags$p("In actual applications, it is very important to consider this tradeoff between utilization rate and average time in system. If you play around with the parameters for a bit, you'll find that you have 2 options for keeping the average time in system at around 6-8 hours: "), 
                                              tags$p("1. Increase number of servers to 2, while keeping service rate constant at 4 patients per day."), 
-                                             tags$p("2. Increase service rate to about 6.5 patients per day while keeping number of servers constant at 1. ")
+                                             tags$p("2. Increase service rate to about 6.5 patients per day while keeping number of servers constant at 1. "), 
+                                             tags$br(), 
+                                             tags$br()
                                        )
                               ), 
                               tabPanel("Assumptions", 
@@ -188,8 +198,8 @@ ui <- fluidPage(
                                              tags$p("2. Arrivals are Poisson distributed (therefore interarrival times are exponentially distributed). This is a standard assumption for modelling arrivals to hospital emergency departments, although often one considers only a particular time window - e.g. 10:00 AM to 12:00 PM"), 
                                              tags$p("3. Service times are exponentially distributed. Again, this is a common assumption, and in some cases matches data closely. For hospital EDs, though, it is probably best to consider it an approximation until you test for it."), 
                                              tags$p("4. Queue discipline: first come first served"), 
-                                             tags$p("5. Maximum queue size: infinite. In reality, there are limits to waiting spaces. When the M/M/c model shows very high time in system results, you can interpret this as meaning that in reality, waiting spaces will start to overflow, and the system will be operating very poorly. To explicitly model limited wait times, look up M/M/c/K queuing models. "), 
-                                             tags$p("6. Balking and reneging do not occur. Under this assumption, customers do not leave until they have been served, and they join the queue no matter how long it currently is. In reality, both these behaviours occur, so average time in system will be lower than suggested by the M/M/c model. However, note that this is still a system failure, because the system is failing to serve customers, and they leave in frustration. ") 
+                                             tags$p("5. Maximum queue size: infinite. In reality, there are limits to waiting spaces. When the M/M/c model shows very high time in system results, you can interpret this as meaning that in reality, waiting spaces will start to overflow, and the system will be operating very poorly. To explicitly model limited waiting spaces, look up M/M/c/K queuing models. "), 
+                                             tags$p("6. Balking and reneging do not occur. Under this assumption, customers do not leave until they have been served, and they join the queue no matter how long it currently is. In reality, both balking and reneging do occur, so average time in system will be lower than suggested by the M/M/c model. However, note that this is still a system failure, because the system is failing to serve customers, and they leave in frustration. ") 
                                        ), 
                                        
                                        h3("Relaxing the assumptions"), 
@@ -262,14 +272,14 @@ server <- function(input, output) {
                   scale_x_continuous(breaks = seq(0.0, 1.1, 0.1), 
                                      labels = seq(0.0, 1.1, 0.1)) + 
                   
-                  geom_hline(yintercept = 24,
-                             colour = "grey90") +
+                  # geom_hline(yintercept = 24,
+                  #            colour = "grey90") +
                   
                   geom_vline(xintercept = input$arrivals/(input$servers * input$serv.rate), 
                              colour = "red") + 
                   
                   labs(title = "Average time in system versus utilization rate", 
-                       subtitle = paste0("For given service rate and number of servers, utilization increases as avg. arrivals increases\nMax arrival rate per day: ", 
+                       subtitle = paste0("System performance rapidly deteriorates as the resource utilization rate approaches 100%\nMax arrival rate per day: ", 
                                          max.visits), 
                        x = "Resource utilization", 
                        y = "Average time in system (hours)") + 
