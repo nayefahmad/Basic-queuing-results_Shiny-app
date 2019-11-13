@@ -10,11 +10,10 @@ library("tidyverse")
 
 
 #TODO: ----------------------------------- 
-# > separate tabs for formulas and assumptions
 
 #*****************************************
 
-# 0) load functions: -------------------
+# 0) define functions: -------------------
 # source(here("src", "testfn_function.R"))
 
 # define test function: 
@@ -118,7 +117,7 @@ ui <- fluidPage(
                               max = 50,
                               value = 1),
                   
-                  # Input: Slider that doesn't really do anything 
+                  # Input: Slider for avg service rate  
                   sliderInput(inputId = "serv.rate",
                               label = "Avg. Service rate (mu = patients/server/day):",
                               min = 1,
@@ -235,13 +234,13 @@ ui <- fluidPage(
 
 
 #************************************************************************
-# 2) Define server logic required to draw a histogram ----
+# 2) Define server logic required to draw a plot ----
 #************************************************************************
 
 server <- function(input, output) {
       
       # Graph of TIS vs utilization rate: ------
-      # This expression that generates a histogram is wrapped in a call
+      # This expression that generates a plot is wrapped in a call
       # to renderPlot to indicate that:
       #
       # 1. It is "reactive" and therefore should be automatically
@@ -281,7 +280,7 @@ server <- function(input, output) {
                   labs(title = "Average time in system versus utilization rate", 
                        subtitle = paste0("System performance rapidly deteriorates as the resource utilization rate approaches 100%\nMax arrival rate per day: ", 
                                          max.visits), 
-                       x = "Resource utilization", 
+                       x = "Traffic intensity (lambda/c*mu)", 
                        y = "Average time in system (hours)") + 
                   theme_classic(base_size = 18)
             
